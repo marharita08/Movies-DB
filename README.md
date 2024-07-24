@@ -33,6 +33,7 @@ erDiagram
         interval duration
         integer director_id
         integer country_id
+        integer poster_id
         timestamp created_at
         timestamp updated_at
     }

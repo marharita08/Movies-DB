@@ -1,7 +1,7 @@
 CREATE TYPE character_role AS ENUM ('leading', 'supporting', 'background');
 CREATE TYPE gender_enum AS ENUM ('male', 'female', 'other');
 
-CREATE TABLE user (
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     first_name VARCHAR(255),
@@ -32,6 +32,7 @@ CREATE TABLE movie (
     duration INTERVAL,
     director_id INTEGER REFERENCES person(id),
     country_id INTEGER REFERENCES country(id),
+    poster_id INTEGER REFERENCES file(id),
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -76,7 +77,8 @@ CREATE TABLE movie_genre (
     movie_id INTEGER NOT NULL REFERENCES movie(id),
     genre_id INTEGER NOT NULL REFERENCES genre(id),
     created_at TIMESTAMP NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL DEFAULT now()
+    updated_at TIMESTAMP NOT NULL DEFAULT now(),
+    UNIQUE(movie_id, genre_id)
 );
 
 CREATE TABLE person_image (
@@ -84,7 +86,8 @@ CREATE TABLE person_image (
     person_id INTEGER NOT NULL REFERENCES person(id),
     image_id INTEGER NOT NULL REFERENCES file(id),
     created_at TIMESTAMP NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL DEFAULT now()
+    updated_at TIMESTAMP NOT NULL DEFAULT now(),
+    UNIQUE(person_id, image_id)
 );
 
 CREATE TABLE movie_actor_character (
@@ -93,13 +96,15 @@ CREATE TABLE movie_actor_character (
     actor_id INTEGER REFERENCES person(id),
     character_id INTEGER REFERENCES character(id),
     created_at TIMESTAMP NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL DEFAULT now()
+    updated_at TIMESTAMP NOT NULL DEFAULT now(),
+    UNIQUE(movie_id, actor_id, character_id)
 );
 
 CREATE TABLE favorite_movies (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES user(id),
+    user_id INTEGER NOT NULL REFERENCES users(id),
     movie_id INTEGER NOT NULL REFERENCES movie(id),
     created_at TIMESTAMP NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL DEFAULT now()
+    updated_at TIMESTAMP NOT NULL DEFAULT now(),
+    UNIQUE(user_id, movie_id)
 );
